@@ -5,6 +5,7 @@ using UnityEngine;
 public class MethodScript : MonoBehaviour
 {
     //Anzahl der Stufe und erreichte Stufen
+    public string methodenName;
     public int stufen = 3;
     public int momentaneStufe = 0;
 
@@ -81,5 +82,105 @@ public class MethodScript : MonoBehaviour
 
         //Report wird verfasst 
         report = new List<string>();
+        report.Add(methodenName + ":");
+        report.Add("Erreichte Stufe = " + momentaneStufe);
+        if (momentaneStufe == 3)
+        {
+            report.Add("Fertig!");
+        }
+        if (momentaneStufe == 2)
+        {
+            Ressource[] r = FindObjectOfType<GameManagerScript>().ressourcen;
+            for (int i = 0; i < tresholds3.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] >= tresholds3[i])
+                {
+                    report.Add(r[i].name + " ist fertig.");
+                } else
+                {
+                    report.Add(r[i].name + " fehlen noch " + (tresholds3[i] - erreichteArbeitszeit[i]) + " Arbeitsstunden");
+                }
+            } 
+        }
+        if (momentaneStufe == 1)
+        {
+            Ressource[] r = FindObjectOfType<GameManagerScript>().ressourcen;
+            for (int i = 0; i < tresholds3.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] == tresholds2[i])
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 2");
+                }
+                if (erreichteArbeitszeit[i] > tresholds2[i])
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 2 und hat " + (erreichteArbeitszeit[i] - tresholds2[i]) + " Stunden übergearbeitet die entfernt werden");
+                }
+                if (erreichteArbeitszeit[i] > tresholds1[i] && erreichteArbeitszeit[i] <= tresholds2[i])
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 1 und hat " + (erreichteArbeitszeit[i] - tresholds1[i]) + " Stunden vorraus gearbeitet");
+                }
+                if (erreichteArbeitszeit[i] == tresholds1[i] )
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 1.");
+                }
+            }
+        }
+        if (momentaneStufe == 0)
+        {
+            Ressource[] r = FindObjectOfType<GameManagerScript>().ressourcen;
+            for (int i = 0; i < tresholds3.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] > tresholds1[i])
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 1 und hat " + (erreichteArbeitszeit[i] - tresholds2[i]) + " Stunden übergearbeitet die entfernt werden");
+                }
+                if (erreichteArbeitszeit[i] == tresholds1[i])
+                {
+                    report.Add(r[i].name + " ist fertig mit Stufe 1");
+                }
+                if (erreichteArbeitszeit[i] < tresholds1[i])
+                {
+                    report.Add(r[i].name + " brauch noch " + (tresholds1[i] - erreichteArbeitszeit[i]) + " Arbeitsstunden um Stufe 1 zu erreichen");
+                }
+            }
+                
+        }
+        //Report wird ausgegeben
+        foreach(string s in report)
+        {
+            Debug.Log(s);
+        }
+
+        //Arbeitsstunden die über eine stufe gehen werden abgeschnitten
+        if (momentaneStufe == 2)
+        {
+            for (int i = 0; i < tresholds3.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] > tresholds3[i])
+                {
+                    erreichteArbeitszeit[i] = tresholds3[i];
+                }
+            }
+        }
+        if (momentaneStufe == 1)
+        {
+            for (int i = 0; i < tresholds2.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] > tresholds2[i])
+                {
+                    erreichteArbeitszeit[i] = tresholds2[i];
+                }
+            }
+        }
+        if (momentaneStufe == 0)
+        {
+            for (int i = 0; i < tresholds1.Length; i++)
+            {
+                if (erreichteArbeitszeit[i] > tresholds1[i])
+                {
+                    erreichteArbeitszeit[i] = tresholds1[i];
+                }
+            }
+        }
     }
 }

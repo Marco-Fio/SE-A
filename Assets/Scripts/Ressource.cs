@@ -7,5 +7,6 @@ using System;
 public class Ressource
 {
     public string name;
-    public int anzahl;
+    public int maxAnzahl;
+    public int momentaneAnzahl;
 }

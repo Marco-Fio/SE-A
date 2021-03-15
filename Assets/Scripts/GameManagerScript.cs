@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
+    public Player[] spieler;
+    public Ressource[] ressourcen;
     // Start is called before the first frame update
     void Start()
     {
-        
+        spieler = FindObjectOfType<SetupManagerScript>().spieler;
+        ressourcen = FindObjectOfType<SetupManagerScript>().ressourcen;
     }
 
     // Update is called once per frame

@@ -16,7 +16,7 @@ public class SetupManagerScript : MonoBehaviour
     public int anzahlSpieler;
     public Player[] spieler;
     public InputField inputField;
-    public Ressource[] ressources;
+    public Ressource[] ressourcen;
     public Button[] ressourcenButton;
     public bool[] vergebeneRessourcen;
     public bool[] clickedRessourcenButtons;
@@ -31,11 +31,11 @@ public class SetupManagerScript : MonoBehaviour
     void Start()
     {
         state = 1;
-        vergebeneRessourcen = new bool[ressources.Length];
+        vergebeneRessourcen = new bool[ressourcen.Length];
         clickedRessourcenButtons = new bool[ressourcenButton.Length];
         for (int i = 0; i < ressourcenButton.Length; i++)
         {
-            ressourcenButton[i].GetComponentInChildren<Text>(true).text = ressources[i].name;
+            ressourcenButton[i].GetComponentInChildren<Text>(true).text = ressourcen[i].name;
             vergebeneRessourcen[i] = false;
             clickedRessourcenButtons[i] = false;
         }
@@ -92,10 +92,6 @@ public class SetupManagerScript : MonoBehaviour
         
     }
 
-    void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
     public void PressZurueck()
     {
         state--;
@@ -104,9 +100,9 @@ public class SetupManagerScript : MonoBehaviour
     public void PressPlus()
     {
         anzahlSpieler++;
-        if (anzahlSpieler >= ressources.Length)
+        if (anzahlSpieler >= ressourcen.Length)
         {
-            anzahlSpieler = ressources.Length;
+            anzahlSpieler = ressourcen.Length;
             plusButton.gameObject.SetActive(false);
         }
         if (anzahlSpieler > 1)
@@ -123,7 +119,7 @@ public class SetupManagerScript : MonoBehaviour
             anzahlSpieler = 1;
             minusButton.gameObject.SetActive(false);
         }
-        if (anzahlSpieler <= ressources.Length)
+        if (anzahlSpieler <= ressourcen.Length)
         {
             plusButton.gameObject.SetActive(true);
         }
@@ -171,7 +167,7 @@ public class SetupManagerScript : MonoBehaviour
             aufforderungsText.text = "Wie viele Spieler gibt es?";
             nummerText.gameObject.SetActive(true);
             nummerText.GetComponentInChildren<Text>().text = "" + anzahlSpieler;
-            if (anzahlSpieler < ressources.Length)
+            if (anzahlSpieler < ressourcen.Length)
             {
                 plusButton.gameObject.SetActive(true);
             }
@@ -207,7 +203,6 @@ public class SetupManagerScript : MonoBehaviour
         //Spielernamen Eingeben
         if (state >= 2 && state <= 1 + anzahlSpieler)
         {
-            bestaetigenButton.gameObject.SetActive(true);
             zurueckButton.gameObject.SetActive(true);
             aufforderungsText.gameObject.SetActive(true);
             aufforderungsText.text = "Gebe Namen an für Spieler " + (state-1);
@@ -233,7 +228,7 @@ public class SetupManagerScript : MonoBehaviour
                     {
                         temp[j] = current.ressourcen[j];
                     }
-                    temp[temp.Length - 1] = ressources[i];
+                    temp[temp.Length - 1] = ressourcen[i];
                     current.ressourcen = temp;
                     clickedRessourcenButtons[i] = false;
                 }
@@ -244,7 +239,7 @@ public class SetupManagerScript : MonoBehaviour
         {
             //Überprüfung ob alle ressourcen vergeben wurden
             bool spielStarten = true;
-            for (int i = 0; i < ressources.Length; i++)
+            for (int i = 0; i < ressourcen.Length; i++)
             {
                 if (!clickedRessourcenButtons[i] && !vergebeneRessourcen[i])
                 {
@@ -295,7 +290,7 @@ public class SetupManagerScript : MonoBehaviour
                     {
                         tempRessource[j] = temp[temp.Length - 1].ressourcen[j];
                     }
-                    tempRessource[tempRessource.Length - 1] = ressources[i];
+                    tempRessource[tempRessource.Length - 1] = ressourcen[i];
                     temp[temp.Length - 1].ressourcen = tempRessource;
                 }
             }
@@ -388,10 +383,21 @@ public class SetupManagerScript : MonoBehaviour
         }
         bestaetigenButton.GetComponentInChildren<Text>().text = "Spiel Starten";
     }
+    public void InputFieldValueChanged()
+    {
+        if (inputField.text.Length > 0) 
+        {
+            bestaetigenButton.gameObject.SetActive(true);
+        } else 
+        {
+            bestaetigenButton.gameObject.SetActive(false);
+        }
+    }
     public void GameStart()
     {
         bestaetigenButton.gameObject.SetActive(false);
         zurueckButton.gameObject.SetActive(false);
+        DontDestroyOnLoad(this.gameObject);
         SceneManager.LoadScene("Spiel");
     }
 
