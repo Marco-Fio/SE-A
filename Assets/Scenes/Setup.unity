@@ -2699,14 +2699,14 @@ MonoBehaviour:
   anzahlSpieler: 0
   spieler: []
   inputField: {fileID: 2057623534}
-  ressources:
-  - name: Mechanikkonstrukteur
+  ressourcen:
+  - name: Mechaniker
     maxAnzahl: 9
     momentaneAnzahl: 0
-  - name: Elektrokonstrukteur
+  - name: Elektroniker
     maxAnzahl: 9
     momentaneAnzahl: 0
-  - name: Sofware Entwickler
+  - name: Softwareentwickler
     maxAnzahl: 9
     momentaneAnzahl: 0
   - name: Projektleiter

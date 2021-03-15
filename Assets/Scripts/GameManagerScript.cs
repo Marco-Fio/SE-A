@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
+    public int woche;
     public Player[] spieler;
     public Ressource[] ressourcen;
     // Start is called before the first frame update
