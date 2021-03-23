@@ -8,6 +8,7 @@ public class GameManagerScript : MonoBehaviour
     public int phase;
     public Player[] spieler;
     public Ressource[] ressourcen;
+    private int test;
     // Start is called before the first frame update
     void Start()
     {
