@@ -2696,17 +2696,17 @@ MonoBehaviour:
   bestaetigenButton: {fileID: 1326993566}
   zurueckButton: {fileID: 925441390}
   state: 1
-  anzahlSpieler: 0
+  anzahlSpieler: 1
   spieler: []
   inputField: {fileID: 2057623534}
   ressourcen:
-  - name: Mechaniker
+  - name: Mechanikkonstrukteur
     maxAnzahl: 9
     momentaneAnzahl: 0
-  - name: Elektroniker
+  - name: Elektrokonstrukeur
     maxAnzahl: 9
     momentaneAnzahl: 0
-  - name: Softwareentwickler
+  - name: Software Entwickler
     maxAnzahl: 9
     momentaneAnzahl: 0
   - name: Projektleiter

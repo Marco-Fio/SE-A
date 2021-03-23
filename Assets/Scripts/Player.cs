@@ -8,4 +8,5 @@ public class Player
 {
     public string name;
     public Ressource[] ressourcen;
+    public int punktzahl;
 }
