@@ -34,18 +34,23 @@ public class SelectionController : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began)
             {
-                Ray ray = arCamera.ScreenPointToRay(touch.position);
-                RaycastHit hitObject;
-
-                if (Physics.Raycast(ray, out hitObject))
-                {
-                    GameObject placementObject = hitObject.collider.gameObject;
-                    ChangeSelectedObject(placementObject);
-                } else
-                {
-                    lastSelected = null;
-                }
+                ChangeSelectedObject(GetTouchedObject());
             }
+        }
+    }
+
+    public GameObject GetTouchedObject()
+    {
+        Ray ray = arCamera.ScreenPointToRay(Input.GetTouch(0).position);
+        RaycastHit hitObject;
+
+        if (Physics.Raycast(ray, out hitObject))
+        {
+            return hitObject.collider.gameObject;
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -55,9 +60,11 @@ public class SelectionController : MonoBehaviour
         {
             lastSelected.transform.position = lastPos;
         }
-        lastPos = selected.transform.position;
-
-        textObject.text = lastPos.ToString();
-        lastSelected = selected;
+        if(selected != null)
+        {
+            lastPos = selected.transform.position;
+            selected.transform.position += new Vector3(0, 0.5f, 0);
+            lastSelected = selected;
+        }
     }
 }
