@@ -28,7 +28,7 @@ public class ObjectSpawnerScript : MonoBehaviour
                 Instantiate(objectToSpawn, placementIndicator.transform.position, placementIndicator.transform.rotation);
                 selectionController.placedObjects.Add(objectToSpawn.GetComponent<PlacementObject>());
                 objPlaced = true;
-                GameObject.Find("Panel").SetActive(true);
+                GameObject.FindGameObjectWithTag("PlacementPanel").SetActive(true);
                 GameObject.Find("PlacementIndicator").SetActive(false);
             }
         }

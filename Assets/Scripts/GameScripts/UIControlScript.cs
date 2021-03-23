@@ -6,21 +6,22 @@ public class UIControlScript : MonoBehaviour
 {
     private GameObject field;
     public int rotateAngle;
-    public int ScaleFactor;
+    public float ScaleFactor;
     private Vector3 scaleFactor;
     private ObjectSpawnerScript objectSpawner;
 
     void Awake()
     {
+        ScaleFactor *= 0.01f;
         scaleFactor = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
         field = GameObject.Find("Phase1");
         objectSpawner = FindObjectOfType<ObjectSpawnerScript>();
     }
 
-    public void ResetBtnClick()
+    public void ResetBtnClick()     //disable placement buttons, show indicator, enable spawner
     {
         Destroy(field);
-        GameObject.Find("Panel").SetActive(false);
+        GameObject.FindGameObjectWithTag("PlacementPanel").SetActive(false);
         GameObject.Find("PlacementIndicator").SetActive(true);
         objectSpawner.objPlaced = false;
     }
