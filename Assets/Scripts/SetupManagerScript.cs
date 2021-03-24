@@ -27,6 +27,12 @@ public class SetupManagerScript : MonoBehaviour
     public Color fontColor;
     public Font font;
     public int fontSize;
+    public Sprite weiterUp;
+    public Sprite weiterDown;
+    public Sprite bestaetigenUp;
+    public Sprite bestaetigenDown;
+    public Sprite[] ressourceUp;
+    public Sprite[] ressourceDown;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,17 +45,9 @@ public class SetupManagerScript : MonoBehaviour
             vergebeneRessourcen[i] = false;
             clickedRessourcenButtons[i] = false;
         }
-        foreach (Button b in ressourcenButton)
+        for (int i = 0; i < ressourcenButton.Length; i++) 
         {
-            var colors = b.colors;
-            colors.selectedColor = selectedColor;
-            colors.normalColor = normalColor;
-            colors.pressedColor = pressedColor;
-            colors.highlightedColor = highlightColor;
-            b.colors = colors;
-            b.GetComponentInChildren<Text>().color = fontColor;
-            b.GetComponentInChildren<Text>().font = font;
-            b.GetComponentInChildren<Text>().fontSize = fontSize;
+            ressourcenButton[i].image.sprite = ressourceUp[i];
         }
         var colorsB = bestaetigenButton.colors;
         colorsB.selectedColor = selectedColor;
@@ -64,14 +62,6 @@ public class SetupManagerScript : MonoBehaviour
         minusButton.GetComponentInChildren<Text>().color = fontColor;
         minusButton.GetComponentInChildren<Text>().fontSize = fontSize;
         minusButton.GetComponentInChildren<Text>().font = font;
-        bestaetigenButton.colors = colorsB;
-        bestaetigenButton.GetComponentInChildren<Text>().color = fontColor;
-        bestaetigenButton.GetComponentInChildren<Text>().fontSize = fontSize;
-        bestaetigenButton.GetComponentInChildren<Text>().font = font;
-        zurueckButton.colors = colorsB;
-        zurueckButton.GetComponentInChildren<Text>().color = fontColor;
-        zurueckButton.GetComponentInChildren<Text>().fontSize = fontSize;
-        zurueckButton.GetComponentInChildren<Text>().font = font;
         aufforderungsText.font = font;
         aufforderungsText.color = fontColor;
         inputField.GetComponentsInChildren<Text>()[0].font = font;
@@ -141,15 +131,10 @@ public class SetupManagerScript : MonoBehaviour
         inputField.gameObject.SetActive(false);
         bestaetigenButton.gameObject.SetActive(false);
         zurueckButton.gameObject.SetActive(false);
-        foreach(Button b in ressourcenButton)
+        for (int i = 0; i < ressourcenButton.Length; i++) 
         {
-            b.gameObject.SetActive(false);
-            var colors = b.colors;
-            colors.selectedColor = selectedColor;
-            colors.normalColor = normalColor;
-            colors.pressedColor = pressedColor;
-            colors.highlightedColor = highlightColor;
-            b.colors = colors;
+            ressourcenButton[i].gameObject.SetActive(false);
+            ressourcenButton[i].image.sprite = ressourceUp[i];
         }
         
         
@@ -208,6 +193,10 @@ public class SetupManagerScript : MonoBehaviour
             aufforderungsText.text = "Gebe Namen an für Spieler " + (state-1);
             inputField.gameObject.SetActive(true);
             inputField.text = spieler[state - 2].name;
+            if (inputField.text.Length > 0)
+            {
+                bestaetigenButton.gameObject.SetActive(true);
+            }
             for (int i = 0; i < clickedRessourcenButtons.Length; i++)       //Notwendig falls der spieler von Ressourcen vergeben zu Spielernamen zurück wechselt
             {
                 clickedRessourcenButtons[i] = false;
@@ -216,7 +205,10 @@ public class SetupManagerScript : MonoBehaviour
         //Ressourcen vergeben -> Bestätigen
         if (state >= 3 + anzahlSpieler && state <= 2 + anzahlSpieler * 2 && _increase)
         {
-            bestaetigenButton.GetComponentInChildren<Text>().text = "Bestätigen";
+            bestaetigenButton.image.sprite = weiterUp;
+            SpriteState ss = bestaetigenButton.GetComponent<Button>().spriteState;
+            ss.pressedSprite = weiterDown;
+            bestaetigenButton.GetComponent<Button>().spriteState = ss;
             for (int i = 0; i < clickedRessourcenButtons.Length; i++)
             {
                 if (clickedRessourcenButtons[i])
@@ -268,7 +260,10 @@ public class SetupManagerScript : MonoBehaviour
             zurueckButton.gameObject.SetActive(true);
             aufforderungsText.gameObject.SetActive(true);
             aufforderungsText.text = "Unverteilte Rollen werden an neuen Spieler \"Unverteilt\" gegeben?";
-            bestaetigenButton.GetComponentInChildren<Text>().text = "Spiel Starten";
+            bestaetigenButton.image.sprite = bestaetigenUp;
+            SpriteState ss = bestaetigenButton.GetComponent<Button>().spriteState;
+            ss.pressedSprite = bestaetigenDown;
+            bestaetigenButton.GetComponent<Button>().spriteState = ss;
         }
         //Verteilung der extra ressourcen an Unverteilt
         if (state == 3 + anzahlSpieler * 2 && _increase)
@@ -301,7 +296,10 @@ public class SetupManagerScript : MonoBehaviour
         if (state >= 2 + anzahlSpieler && state <= 1 + anzahlSpieler * 2)
         {
             bestaetigenButton.gameObject.SetActive(true);
-            bestaetigenButton.GetComponentInChildren<Text>().text = "Bestätigen";
+            bestaetigenButton.image.sprite = weiterUp;
+            SpriteState ss = bestaetigenButton.GetComponent<Button>().spriteState;
+            ss.pressedSprite = weiterDown;
+            bestaetigenButton.GetComponent<Button>().spriteState = ss;
             zurueckButton.gameObject.SetActive(true);
             aufforderungsText.gameObject.SetActive(true);
             aufforderungsText.text = "Welche Rolle(n) soll Spieler \"" + spieler[state-2-anzahlSpieler].name + "\" übernehmen?";
@@ -321,13 +319,9 @@ public class SetupManagerScript : MonoBehaviour
                     {
                         ressourcenButton[i].gameObject.SetActive(true);
                         alleRollenVergeben = false;
-                        var colors = ressourcenButton[i].colors;
-                        colors.normalColor = pressedColor;
-                        colors.selectedColor = selectedColor;
-                        colors.highlightedColor = highlightColor;
+                        ressourcenButton[i].image.sprite = ressourceDown[i];
                         clickedRessourcenButtons[i] = true;
                         vergebeneRessourcen[i] = false;
-                        ressourcenButton[i].colors = colors;
                     } 
                 }
             }
@@ -350,19 +344,16 @@ public class SetupManagerScript : MonoBehaviour
 
     public void PressResource(int _ressource)
     {
-        var colors = ressourcenButton[_ressource].colors;
+        Button b = ressourcenButton[_ressource];
         if (clickedRessourcenButtons[_ressource])
         {
-            colors.normalColor = normalColor;
-            colors.selectedColor = selectedColor;
+            b.image.sprite = ressourceUp[_ressource];
             clickedRessourcenButtons[_ressource] = false;
         } else
         {
-            colors.normalColor = pressedColor;
-            colors.selectedColor = colors.normalColor;
+            b.image.sprite = ressourceDown[_ressource];
             clickedRessourcenButtons[_ressource] = true;
         }
-        ressourcenButton[_ressource].colors = colors;
         //Test ob mindestens eine Rolle/Ressource ausgewählt wurde und der Bestätigen Button angezeigt werden kann
         bestaetigenButton.gameObject.SetActive(false);
         for (int i = 0; i < ressourcenButton.Length; i++)
@@ -373,7 +364,10 @@ public class SetupManagerScript : MonoBehaviour
             }
         }
         //Test ob das Spiel schon gestartet werden kann um den Text des Bestätigen Buttons zu ändern
-        bestaetigenButton.GetComponentInChildren<Text>().text = "Bestätigen";
+        bestaetigenButton.image.sprite = weiterUp;
+        SpriteState ss = bestaetigenButton.GetComponent<Button>().spriteState;
+        ss.pressedSprite = weiterDown;
+        bestaetigenButton.GetComponent<Button>().spriteState = ss;
         for (int i = 0; i < ressourcenButton.Length; i++)
         {
             if (!clickedRessourcenButtons[i] && !vergebeneRessourcen[i])
@@ -381,7 +375,9 @@ public class SetupManagerScript : MonoBehaviour
                 return;
             }
         }
-        bestaetigenButton.GetComponentInChildren<Text>().text = "Spiel Starten";
+        bestaetigenButton.image.sprite = bestaetigenUp; 
+        ss.pressedSprite = bestaetigenDown;
+        bestaetigenButton.GetComponent<Button>().spriteState = ss;
     }
     public void InputFieldValueChanged()
     {

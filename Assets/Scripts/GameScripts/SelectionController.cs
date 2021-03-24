@@ -46,6 +46,10 @@ public class SelectionController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitObject))
         {
+            if (hitObject.collider.gameObject.GetComponent<MethodScript>())
+            {
+                GameObject.FindWithTag("GameController").GetComponent<GameManagerScript>().SelectMethod(hitObject.collider.gameObject.GetComponent<MethodScript>());
+            }
             return hitObject.collider.gameObject;
         }
         else

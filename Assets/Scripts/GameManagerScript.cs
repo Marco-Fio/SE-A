@@ -18,7 +18,7 @@ public class GameManagerScript : MonoBehaviour
     public Button minusButton;
     public Button bestaetigenButton;
     public Button zurueckButton;
-    public Text ressourceText;
+    public Button ressourceButton;
     public Text methodeText;
     //Phasennamen
     //UI allgemein
@@ -26,7 +26,6 @@ public class GameManagerScript : MonoBehaviour
     public Text phasennameText;
     public Text wocheText;
     public Text spielernameText;
-    public Text ressourcenText;
     public Text punktzahl;
     public Image rolle;
     public Text AnzeigeText;
@@ -35,17 +34,29 @@ public class GameManagerScript : MonoBehaviour
 
     //Images
     public Sprite[] rollenIcons;
+    public Sprite ressourceButtonUp;
+    public Sprite ressourceButtonDown;
+
     // Start is called before the first frame update
     void Start()
     {
+        ausgewaehlteRessource = null;
+        ausgewaehlteMethode = null;
         //Übernehmen der werte nach einem Setup
         if (FindObjectOfType<SetupManagerScript>())
         {
             spieler = FindObjectOfType<SetupManagerScript>().spieler;
             ressourcen = FindObjectOfType<SetupManagerScript>().ressourcen;
         }
-        ShowUI(true);
-        UpdateUI();
+        //TODO Phase wird eingeleitet hier
+        foreach (Player p in spieler)
+        {
+            foreach (Ressource r in p.ressourcen)
+            {
+                r.momentaneAnzahl = r.maxAnzahl;
+            }
+        }
+        UpdateWoche();
     }
 
     // Update is called once per frame
@@ -56,6 +67,7 @@ public class GameManagerScript : MonoBehaviour
 
     void ZeigeRessourcenVerteilung()
     {
+        ShowUI(false);
         bestaetigenButton.gameObject.SetActive(true);
         zurueckButton.gameObject.SetActive(true);
         //Ressourcen ID
@@ -68,17 +80,17 @@ public class GameManagerScript : MonoBehaviour
                 rId = i;
             }
         }
-        ressourceText.gameObject.SetActive(true);
+        ressourceButton.gameObject.SetActive(true);
         methodeText.gameObject.SetActive(true);
         //Textzuweisung
-        ressourceText.text = "" + ausgewaehlteRessource.momentaneAnzahl;
+        ressourceButton.GetComponentInChildren<Text>().text = "" + ausgewaehlteRessource.momentaneAnzahl;
         methodeText.text = "" + ausgewaehlteMethode.verteilteRessourcen[rId];
 
         if (int.Parse(methodeText.text) > 0)
         {
             minusButton.gameObject.SetActive(true);
         }
-        if (int.Parse(ressourceText.text) > 0)
+        if (int.Parse(ressourceButton.GetComponentInChildren<Text>().text) > 0)
         {
             plusButton.gameObject.SetActive(true);
         }
@@ -86,7 +98,7 @@ public class GameManagerScript : MonoBehaviour
     public void PressZurueckButton()
     {
         //UI Elemente werden ausgestellt
-        ressourceText.gameObject.SetActive(false);
+        ressourceButton.gameObject.SetActive(false);
         methodeText.gameObject.SetActive(false); 
         minusButton.gameObject.SetActive(false);
         plusButton.gameObject.SetActive(false); 
@@ -95,6 +107,8 @@ public class GameManagerScript : MonoBehaviour
         //Auswahl wird weggenommen
         ausgewaehlteMethode = null;
         ausgewaehlteRessource = null;
+        UpdateUI();
+        ShowUI(true);
     }
     public void PressBestaetigenButton()
     {
@@ -108,10 +122,10 @@ public class GameManagerScript : MonoBehaviour
             }
         }
         //Übernehmen der werte
-        ausgewaehlteRessource.momentaneAnzahl = int.Parse(ressourceText.text);
+        ausgewaehlteRessource.momentaneAnzahl = int.Parse(ressourceButton.GetComponentInChildren<Text>().text);
         ausgewaehlteMethode.verteilteRessourcen[rId] = int.Parse(methodeText.text);
         //UI elemente werden wieder ausgestellt
-        ressourceText.gameObject.SetActive(false);
+        ressourceButton.gameObject.SetActive(false);
         methodeText.gameObject.SetActive(false);
         minusButton.gameObject.SetActive(false);
         plusButton.gameObject.SetActive(false);
@@ -120,11 +134,14 @@ public class GameManagerScript : MonoBehaviour
         //Auswahl wird rausgenommen
         ausgewaehlteMethode = null;
         ausgewaehlteRessource = null;
+        ressourceButton.image.sprite = ressourceButtonUp;
+        UpdateUI();
+        ShowUI(true);
     }
     public void PressPlusButton()
     {
         //Neue Anzeige
-        ressourceText.text = "" + (int.Parse(ressourceText.text) - 1);
+        ressourceButton.GetComponentInChildren<Text>().text = "" + (int.Parse(ressourceButton.GetComponentInChildren<Text>().text) - 1);
         methodeText.text = "" + (int.Parse(methodeText.text) + 1);
         //Checks ob Buttons noch angezeigt werden können
         if (int.Parse(methodeText.text) > 0)
@@ -134,7 +151,7 @@ public class GameManagerScript : MonoBehaviour
         {
             minusButton.gameObject.SetActive(false);
         }
-        if (int.Parse(ressourceText.text) > 0)
+        if (int.Parse(ressourceButton.GetComponentInChildren<Text>().text) > 0)
         {
             plusButton.gameObject.SetActive(true);
         } else
@@ -145,7 +162,7 @@ public class GameManagerScript : MonoBehaviour
     public void PressMinusButton()
     {
         //Neue Anzeige
-        ressourceText.text = "" + (int.Parse(ressourceText.text) + 1);
+        ressourceButton.GetComponentInChildren<Text>().text = "" + (int.Parse(ressourceButton.GetComponentInChildren<Text>().text) + 1);
         methodeText.text = "" + (int.Parse(methodeText.text) - 1);
         //Checks ob Buttons noch angezeigt werden können
         if (int.Parse(methodeText.text) > 0)
@@ -156,7 +173,7 @@ public class GameManagerScript : MonoBehaviour
         {
             minusButton.gameObject.SetActive(false);
         }
-        if (int.Parse(ressourceText.text) > 0)
+        if (int.Parse(ressourceButton.GetComponentInChildren<Text>().text) > 0)
         {
             plusButton.gameObject.SetActive(true);
         }
@@ -172,7 +189,7 @@ public class GameManagerScript : MonoBehaviour
         phasennameText.gameObject.SetActive(_show);
         wocheText.gameObject.SetActive(_show);
         spielernameText.gameObject.SetActive(_show);
-        ressourcenText.gameObject.SetActive(_show);
+        ressourceButton.gameObject.SetActive(_show);
         rolle.gameObject.SetActive(_show);
         punktzahl.gameObject.SetActive(_show);
         AnzeigeText.gameObject.SetActive(_show);
@@ -182,14 +199,14 @@ public class GameManagerScript : MonoBehaviour
 
     void UpdateUI()
     {
-        if (phase > 0 && phase < phasenNamen.Length)
+        if (phase > 0 && phase <= phasenNamen.Length)
         {
             phasennameText.text = phasenNamen[phase - 1];
         }
         wocheText.text = "Woche: " + woche;
 
         spielernameText.text = spieler[momentanerSpieler].name;
-        ressourcenText.text = "" + spieler[momentanerSpieler].ressourcen[momentaneRolle].momentaneAnzahl + "/" + spieler[momentanerSpieler].ressourcen[momentaneRolle].maxAnzahl;
+        ressourceButton.GetComponentInChildren<Text>().text = "" + spieler[momentanerSpieler].ressourcen[momentaneRolle].momentaneAnzahl + "/" + spieler[momentanerSpieler].ressourcen[momentaneRolle].maxAnzahl;
 
         //Ressourcen Id
         int rId = -1;
@@ -207,5 +224,107 @@ public class GameManagerScript : MonoBehaviour
         punktzahl.text = "" + spieler[momentanerSpieler].punktzahl;
         //Anzeige wird leer gemacht
         AnzeigeText.text = "";
+    }
+    public void PressBestaetigenButtonUI()
+    {
+        ausgewaehlteRessource = null;
+        ressourceButton.image.sprite = ressourceButtonUp;
+        if (momentaneRolle >= spieler[momentanerSpieler].ressourcen.Length-1)
+        {
+            //Woche wird geupdated
+            if (momentanerSpieler >= spieler.Length -1)
+            {
+                //TODO Abfrage ob phase gewechselt werden soll
+                momentanerSpieler = 0;
+                momentaneRolle = 0;
+                UpdateWoche();
+            }
+            //spieler wird geupdated
+            else
+            {
+                momentanerSpieler++;
+                momentaneRolle = 0;
+            }
+        } 
+        else
+        //Rolle wird geupdated
+        {
+            momentaneRolle++;
+        }
+        UpdateUI();
+    }
+    //Wochenwechsel
+    void UpdateWoche()
+    {
+        if (woche >= 7)
+        {
+            GameOver();
+            return;
+        }
+        woche++;
+        foreach (Player p in spieler)
+        {
+            foreach (Ressource r in p.ressourcen)
+            {
+                r.momentaneAnzahl = r.maxAnzahl;
+            }
+        }
+        UpdateUI();
+        WochenEreignis();
+    }
+    void WochenEreignis()
+    {
+        int rnd = Random.Range(0,12);
+        switch(rnd)
+        {
+            case 0: Debug.Log("Wochenereigniss 1"); break;
+            case 1: Debug.Log("Wochenereigniss 2"); break;
+            case 2: Debug.Log("Wochenereigniss 3"); break;
+            case 3: Debug.Log("Wochenereigniss 4"); break;
+            case 4: Debug.Log("Wochenereigniss 5"); break;
+            case 5: Debug.Log("Wochenereigniss 6"); break;
+            case 6: Debug.Log("Wochenereigniss 7"); break;
+            case 7: Debug.Log("Wochenereigniss 8"); break;
+            case 8: Debug.Log("Wochenereigniss 9"); break;
+            case 9: Debug.Log("Wochenereigniss 10"); break;
+            case 10: Debug.Log("Wochenereigniss 11"); break;
+            case 11: Debug.Log("Wochenereigniss 12"); break;
+            default: Debug.LogError("Kein Wochenereigniss von 0-11 ausgewählt"); break;
+        }
+        UpdateUI();
+        ShowUI(true);
+    }
+
+    public void PressRessource()
+    {
+        
+        if (ausgewaehlteRessource == null)
+        {
+            ausgewaehlteRessource = spieler[momentanerSpieler].ressourcen[momentaneRolle];
+            ressourceButton.image.sprite = ressourceButtonDown;
+        } else
+        {
+            ausgewaehlteRessource = null;
+            ressourceButton.image.sprite = ressourceButtonUp;
+        }
+        if (ausgewaehlteMethode != null && ausgewaehlteRessource != null)
+        {
+            ZeigeRessourcenVerteilung();
+        }
+
+    }
+    void GameOver()
+    {
+        Debug.Log("Game Over!");
+        ShowUI(false);
+    }
+
+    public void SelectMethod(MethodScript _methodScript)
+    {
+        ausgewaehlteMethode = _methodScript;
+        if (ausgewaehlteMethode != null && ausgewaehlteRessource != null)
+        {
+            ZeigeRessourcenVerteilung();
+        }
     }
 }
